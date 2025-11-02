@@ -13,6 +13,7 @@ So let's learn how to host a MQTT server On Raspberry Pi 5 and on Window.
 
 
 Update your system and install mosquito:   
+
 ```
 sudo apt update
 sudo apt install -y mosquitto mosquitto-clients
