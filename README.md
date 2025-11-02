@@ -86,11 +86,10 @@ topic read game_input/#
 topic readwrite $SYS/#
 ```
 
-
-I had a but on my pi
-> E: dpkg was interrupted, you must manually run 'sudo dpkg --configure -a' to correct the problem.
-``` sudo dpkg --configure -a ```
-
+```
+sudo systemctl restart mosquitto
+sudo systemctl status mosquitto
+```
 
 ```
 mosquitto_sub -h localhost -t test/topic -u myuser -P mypassword
