@@ -27,29 +27,29 @@ sudo nano /etc/mosquitto/mosquitto.conf
 ```
 
 ```
-# ========================
-# Mosquitto Configuration
-# ========================
-
-# --- Guest listener (limited to 16 bytes) ---
-listener 1883 0.0.0.0
-allow_anonymous true
-acl_file /etc/mosquitto/aclfile
-message_size_limit 16
+# === GLOBAL SETTINGS ===
+per_listener_settings true
 log_type all
 connection_messages true
 log_dest syslog
 log_dest stdout
+pid_file /var/run/mosquitto.pid
+message_size_limit 2097152
 
-# --- Admin listener (full access) ---
+# === LISTENER 1: Anonymous (port 1883) ===
+listener 1883 0.0.0.0
+allow_anonymous true
+acl_file /etc/mosquitto/aclfile
+
+# === LISTENER 2: Authenticated (port 1884) ===
 listener 1884 0.0.0.0
 allow_anonymous false
 password_file /etc/mosquitto/passwd
 acl_file /etc/mosquitto/aclfile
-log_type all
-connection_messages true
-log_dest syslog
-log_dest stdout
+
+
+control_socket /run/mosquitto/control.sock
+
 
 ```
 
@@ -94,4 +94,77 @@ sudo systemctl status mosquitto
 ```
 mosquitto_sub -h localhost -t test/topic -u myuser -P mypassword
 ```
+
+
+
+```
+sudo chmod 644 /etc/mosquitto/mosquitto.conf
+sudo chown root:root /etc/mosquitto/mosquitto.conf
+sudo chmod 644 /etc/mosquitto/aclfile
+
+
+sudo mkdir -p /var/run
+sudo chown mosquitto:mosquitto /var/run
+
+sudo chown mosquitto:mosquitto /etc/mosquitto/passwd /etc/mosquitto/aclfile
+sudo chmod 600 /etc/mosquitto/passwd
+sudo chmod 644 /etc/mosquitto/aclfile
+
+sudo systemctl restart mosquitto
+
+journalctl -u mosquitto -f
+
+mosquitto -c /etc/mosquitto/mosquitto.conf -v
+```
+
+
+```
+sudo nano /etc/mosquitto/acl_check.sh
+sudo chmod +x /etc/mosquitto/acl_check.sh
+
+
+```
+
+
+```
+#!/bin/bash
+# External ACL check for Mosquitto
+
+# Read parameters from stdin
+read clientid
+read username
+read topic
+read acc
+read payloadlen
+
+# Deny publishes > 16 bytes to "game_input/iid"
+if [ "$topic" = "game_input/iid" ] && [ "$payloadlen" -gt 16 ]; then
+    # return 1 = deny
+    exit 1
+fi
+
+# allow otherwise
+exit 0
+
+```
+
+
+```
+sudo nano /etc/mosquitto/mosquitto.conf
+
+```
+
+```
+# Load custom ACL plugin
+auth_plugin /etc/mosquitto/mosquitto_auth_plugin.py
+
+
+```
+
+
+
+-----------
+
+
+Kick 
 
