@@ -34,7 +34,6 @@ connection_messages true
 log_dest syslog
 log_dest stdout
 pid_file /var/run/mosquitto.pid
-message_size_limit 2097152
 
 # === LISTENER 1: Anonymous (port 1883) ===
 listener 1883 0.0.0.0
@@ -46,10 +45,6 @@ listener 1884 0.0.0.0
 allow_anonymous false
 password_file /etc/mosquitto/passwd
 acl_file /etc/mosquitto/aclfile
-
-
-control_socket /run/mosquitto/control.sock
-
 
 ```
 
@@ -71,7 +66,8 @@ sudo nano /etc/mosquitto/aclfile
 # -----------------------------
 
 # Guests can PUBLISH game input
-topic write game_input/#
+# If you allows player to send you information.
+# topic write game_input/#
 
 # Guests can READ game data
 topic read game_data/#
@@ -81,7 +77,7 @@ topic read game_data/#
 # ACLs for Admins (authenticated users)
 # -----------------------------
 user admin
-topic write game_data/#
+topic readwrite game_data/#
 topic read game_input/#
 topic readwrite $SYS/#
 ```
