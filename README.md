@@ -1,4 +1,5 @@
-# HelloPicoGodotMQTT
+# Hello Pico Godot MQTT
+
 Let's learn how to use MQTT to make connection between Pico 2W ESP32 and Godot Engine.
 
 
@@ -98,7 +99,6 @@ sudo chmod 644 /etc/mosquitto/mosquitto.conf
 sudo chown root:root /etc/mosquitto/mosquitto.conf
 sudo chmod 644 /etc/mosquitto/aclfile
 
-
 sudo mkdir -p /var/run
 sudo chown mosquitto:mosquitto /var/run
 
@@ -114,53 +114,7 @@ mosquitto -c /etc/mosquitto/mosquitto.conf -v
 ```
 
 
-```
-sudo nano /etc/mosquitto/acl_check.sh
-sudo chmod +x /etc/mosquitto/acl_check.sh
-
-
-```
-
-
-```
-#!/bin/bash
-# External ACL check for Mosquitto
-
-# Read parameters from stdin
-read clientid
-read username
-read topic
-read acc
-read payloadlen
-
-# Deny publishes > 16 bytes to "game_input/iid"
-if [ "$topic" = "game_input/iid" ] && [ "$payloadlen" -gt 16 ]; then
-    # return 1 = deny
-    exit 1
-fi
-
-# allow otherwise
-exit 0
-
-```
-
-
-```
-sudo nano /etc/mosquitto/mosquitto.conf
-
-```
-
-```
-# Load custom ACL plugin
-auth_plugin /etc/mosquitto/mosquitto_auth_plugin.py
-
-
-```
 
 
 
------------
-
-
-Kick 
 
