@@ -90,7 +90,8 @@ sudo systemctl status mosquitto
 ```
 
 ```
-mosquitto_sub -h localhost -t test/topic -u myuser -P mypassword
+mosquitto_sub -h 193.150.14.6 -p 1884 -t game_data/positions -u admin -P 11234566
+
 ```
 
 
