@@ -116,6 +116,8 @@ mosquitto -c /etc/mosquitto/mosquitto.conf -v
 ```
 
 
+Client MQTTX for testing:  
+https://github.com/emqx/MQTTX/releases/tag/v1.12.1  
 
 
 
